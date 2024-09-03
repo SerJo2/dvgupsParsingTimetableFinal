@@ -21,7 +21,3 @@ for i in trs:
         for tr in forTrs[0:]
     ]
     print(tabulate(rows, headers=headers, tablefmt="grid"))
-
-
-
-# print(tabulate(rows, headers=headers, tablefmt="grid"))
