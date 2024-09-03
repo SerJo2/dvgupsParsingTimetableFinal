@@ -10,13 +10,14 @@ table = response.text
 
 
 root = BeautifulSoup(table, 'html.parser')
-trs = root.select('table')
+trs = root.find_all('table')
 # tr > th > td
-print(trs)
-headers = [th.text for th in trs[0].select('th')]
-rows = [
-    [td.text for td in tr.select('td')]
-    for tr in trs[1:]
-]
-
-print(tabulate(rows, headers=headers, tablefmt="grid"))
+for i in trs:
+    forRoot = BeautifulSoup(str(i), 'html.parser')
+    forTrs = forRoot.select_one('table').select('tr')
+    headers = [th.text for th in forTrs[0].select('th')]
+    rows = [
+        [td.text for td in tr.select('td')]
+        for tr in forTrs[0:]
+    ]
+    print(tabulate(rows, headers=headers, tablefmt="grid"))
