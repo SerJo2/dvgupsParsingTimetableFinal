@@ -15,7 +15,7 @@ trs = root.find_all('table')
 for i in trs:
     forRoot = BeautifulSoup(str(i), 'html.parser')
     forTrs = forRoot.select_one('table').select('tr')
-    headers = [th.text for th in forTrs[0].select('th')]
+    headers = []
     rows = [
         [td.text for td in tr.select('td')]
         for tr in forTrs[0:]
