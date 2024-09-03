@@ -531,3 +531,7 @@ cython_debug/
 #.idea/
 
 /prefs.py
+/.idea/dvgupsParsingTimetableFinal.iml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml
