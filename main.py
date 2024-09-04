@@ -68,16 +68,16 @@ bot = telebot.TeleBot(API_TOKEN)
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
+    if message.chat.id == myChatId:
+        markup = types.InlineKeyboardMarkup()
+        today = types.InlineKeyboardButton("Сегодня", callback_data='today')
+        tomorrow = types.InlineKeyboardButton("Завтра", callback_data='tomorrow')
+        markup.add(today)
+        markup.add(tomorrow)
 
-    markup = types.InlineKeyboardMarkup()
-    today = types.InlineKeyboardButton("Сегодня", callback_data='today')
-    tomorrow = types.InlineKeyboardButton("Завтра", callback_data='tomorrow')
-    markup.add(today)
-    markup.add(tomorrow)
-
-    bot.send_message(message.chat.id,
-                     "выбор?".format(message.from_user),
-                     reply_markup=markup)
+        bot.send_message(message.chat.id,
+                         "выбор?".format(message.from_user),
+                         reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
