@@ -11,7 +11,6 @@ table = response.text
 
 root = BeautifulSoup(table, 'html.parser')
 trs = root.find_all('table')
-# tr > th > td
 for i in trs:
     forRoot = BeautifulSoup(str(i), 'html.parser')
     forTrs = forRoot.select_one('table').select('tr')
@@ -21,3 +20,5 @@ for i in trs:
         for tr in forTrs[0:]
     ]
     print(tabulate(rows, headers=headers, tablefmt="grid"))
+
+    
