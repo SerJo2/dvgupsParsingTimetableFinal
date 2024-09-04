@@ -9,6 +9,8 @@ from telebot import types
 import datetime
 
 current_date = datetime.datetime.now().strftime('%d.%m.%Y')
+tomorrow_date = (datetime.date.today() + datetime.timedelta(days=1)).strftime('%d.%m.%Y')
+print(tomorrow_date)
 
 API_TOKEN = token
 
@@ -68,8 +70,10 @@ bot = telebot.TeleBot(API_TOKEN)
 def get_text_messages(message):
 
     markup = types.InlineKeyboardMarkup()
-    today = types.InlineKeyboardButton("Вывести расписание", callback_data='today')
+    today = types.InlineKeyboardButton("Сегодня", callback_data='today')
+    tomorrow = types.InlineKeyboardButton("Завтра", callback_data='tomorrow')
     markup.add(today)
+    markup.add(tomorrow)
 
     bot.send_message(message.chat.id,
                      "выбор?".format(message.from_user),
@@ -83,7 +87,12 @@ def callback_inline(call):
             if i[:10] == current_date:
                 bot.send_message(call.message.chat.id,
                                 i)
-        
+    if "tomorrow" in call.data:
+        tablelist = get_timetable_list()
+        for i in tablelist:
+            if i[:10] == tomorrow_date:
+                bot.send_message(call.message.chat.id,
+                                 i)
 
 
 bot.infinity_polling(timeout=10, long_polling_timeout = 5)
