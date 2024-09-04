@@ -6,6 +6,9 @@ from bs4 import BeautifulSoup
 import telebot
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from telebot import types
+import datetime
+
+current_date = datetime.datetime.now().strftime('%d.%m.%Y')
 
 API_TOKEN = token
 
@@ -65,20 +68,22 @@ bot = telebot.TeleBot(API_TOKEN)
 def get_text_messages(message):
 
     markup = types.InlineKeyboardMarkup()
-    button1 = types.InlineKeyboardButton("Вывести расписание", callback_data='tableReply')
-    markup.add(button1)
+    today = types.InlineKeyboardButton("Вывести расписание", callback_data='today')
+    markup.add(today)
 
     bot.send_message(message.chat.id,
-                     "afk gameplay".format(message.from_user),
+                     "выбор?".format(message.from_user),
                      reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
-    if "table" in call.data:
+    if "today" in call.data:
         tablelist = get_timetable_list()
         for i in tablelist:
-            bot.send_message(call.message.chat.id,
-                             i)
+            if i[:10] == current_date:
+                bot.send_message(call.message.chat.id,
+                                i)
+        
 
 
 bot.infinity_polling(timeout=10, long_polling_timeout = 5)
