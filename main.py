@@ -8,11 +8,8 @@ from telebot.types import ReplyKeyboardMarkup, KeyboardButton
 from telebot import types
 import datetime
 
-current_date = datetime.datetime.now().strftime('%d.%m.%Y')
-tomorrow_date = (datetime.date.today() + datetime.timedelta(days=1)).strftime('%d.%m.%Y')
-print(tomorrow_date)
-
 API_TOKEN = token
+
 
 def get_timetable_list():
     response = requests.post('https://www.dvgups.ru/index.php', params=params, cookies=cookies, headers=headers, data=data)
@@ -43,23 +40,22 @@ def get_timetable_list():
         for j in range(len(rows)):
             for z in range(len(rows[j])):
                 if z != 3:
-                    final_table[j].append(rows[j][z])
+                    final_table[j].append(rows[j][z]) # Убираем бесполезный z: 3, и оставляем все остальное
 
         print(final_table)
-        for_date = str(all_dates[i])
+        for_date = str(all_dates[i]) # даты
 
         print(for_date[4:-5])
         print(tabulate(final_table, headers=[], tablefmt="grid"))
-        printed_table += for_date[4:-5].strip().rstrip().rstrip('\n') + "\n"
+        printed_table += for_date[4:-5].strip().rstrip().rstrip('\n') + "\n" # дата
         for j in range(len(final_table)):
             s = ''
             for z in range(len(final_table[j])):
                 s += final_table[j][z].strip().rstrip().rstrip('\n') + "\n"
             printed_table += s + "\n"
-        printed_table += "----------------------------------------------" + "\n"
+        printed_table += "----------------------------------------------" + "\n" # конец расписания текущей даты
         printed_list.append(printed_table)
     return printed_list
-
 
 
 
@@ -72,8 +68,10 @@ def get_text_messages(message):
         markup = types.InlineKeyboardMarkup()
         today = types.InlineKeyboardButton("Сегодня", callback_data='today')
         tomorrow = types.InlineKeyboardButton("Завтра", callback_data='tomorrow')
+        full = types.InlineKeyboardButton("Фул", callback_data='full')
         markup.add(today)
         markup.add(tomorrow)
+        markup.add(full)
 
         bot.send_message(message.chat.id,
                          "выбор?".format(message.from_user),
@@ -81,6 +79,14 @@ def get_text_messages(message):
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_inline(call):
+    current_date = datetime.datetime.now().strftime('%d.%m.%Y')
+    tomorrow_date = (datetime.date.today() + datetime.timedelta(days=1)).strftime('%d.%m.%Y')
+    # data[1] = datetime.datetime.now().strftime('%d.%m.%Y')
+
+    current_date_datetime = datetime.datetime.now()
+    tomorrow_date_datetime = (datetime.date.today() + datetime.timedelta(days=1))
+
+
     if "today" in call.data:
         tablelist = get_timetable_list()
         for i in tablelist:
@@ -94,5 +100,10 @@ def callback_inline(call):
                 bot.send_message(call.message.chat.id,
                                  i)
 
+    if "full" in call.data:
+        tablelist = get_timetable_list()
+        for i in tablelist:
+            bot.send_message(call.message.chat.id,
+                                 i)
 
 bot.infinity_polling(timeout=10, long_polling_timeout = 5)
