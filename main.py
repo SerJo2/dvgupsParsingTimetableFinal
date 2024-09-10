@@ -85,7 +85,6 @@ def callback_inline(call):
 
     current_date_datetime = datetime.datetime.now()
     tomorrow_date_datetime = (datetime.date.today() + datetime.timedelta(days=1))
-    #TODO
 
     if "today" in call.data:
         tablelist = get_timetable_list()
